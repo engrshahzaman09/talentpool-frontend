@@ -1,0 +1,129 @@
+<div class="dashboard">
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <h1>🏢 TalentPool</h1>
+      <span>Candidate Panel</span>
+    </div>
+    <div class="nav-user">
+      <span>Welcome, {{ currentUser?.fullName }}</span>
+      <button (click)="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button [class.active]="activeTab === 'jobs'" (click)="activeTab = 'jobs'; loadJobs()">Browse Jobs</button>
+    <button [class.active]="activeTab === 'applications'" (click)="loadMyApplications()">My Applications</button>
+  </div>
+
+  <!-- Jobs Tab -->
+  <div class="content" *ngIf="activeTab === 'jobs'">
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <input type="text" [(ngModel)]="searchKeyword" placeholder="Search jobs..." />
+      <input type="text" [(ngModel)]="searchLocation" placeholder="Location..." />
+      <button (click)="searchJobs()">Search</button>
+      <button class="btn-reset" (click)="loadJobs()">Reset</button>
+    </div>
+
+    <div class="loading" *ngIf="isLoading">Loading...</div>
+
+    <!-- Jobs Grid -->
+    <div class="jobs-grid" *ngIf="!isLoading">
+      <div class="job-card" *ngFor="let job of jobs">
+        <div class="job-header">
+          <h3>{{ job.title }}</h3>
+          <span class="job-type">{{ job.jobType }}</span>
+        </div>
+        <div class="job-company">🏢 {{ job.companyName }}</div>
+        <div class="job-location">📍 {{ job.location }}</div>
+        <div class="job-salary" *ngIf="job.salaryMin">
+          💰 {{ job.salaryMin | number }} - {{ job.salaryMax | number }}
+        </div>
+        <div class="job-deadline" *ngIf="job.deadline">
+          📅 Deadline: {{ job.deadline }}
+        </div>
+        <p class="job-description">{{ job.description | slice:0:100 }}...</p>
+        <button class="btn-apply" (click)="openApplyModal(job)">Apply Now</button>
+      </div>
+    </div>
+
+    <div class="no-jobs" *ngIf="!isLoading && jobs.length === 0">
+      No jobs found!
+    </div>
+  </div>
+
+  <!-- Applications Tab -->
+  <div class="content" *ngIf="activeTab === 'applications'">
+    <h2>My Applications</h2>
+    <table *ngIf="myApplications.length > 0">
+      <thead>
+        <tr>
+          <th>Job Title</th>
+          <th>Company</th>
+          <th>Status</th>
+          <th>Applied At</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let app of myApplications">
+          <td>{{ app.jobTitle }}</td>
+          <td>{{ app.companyName }}</td>
+          <td>
+            <span class="badge" [ngClass]="{
+              'badge-applied': app.status === 'APPLIED',
+              'badge-shortlisted': app.status === 'SHORTLISTED',
+              'badge-hired': app.status === 'HIRED',
+              'badge-rejected': app.status === 'REJECTED'
+            }">{{ app.status }}</span>
+          </td>
+          <td>{{ app.appliedAt | date }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="no-jobs" *ngIf="myApplications.length === 0">
+      No applications yet!
+    </div>
+  </div>
+
+  <!-- Apply Modal -->
+  <div class="modal-overlay" *ngIf="showApplyModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Apply for {{ selectedJob?.title }}</h3>
+        <button class="modal-close" (click)="closeApplyModal()">✕</button>
+      </div>
+      <div class="modal-body">
+
+        <div class="job-info">
+          <p>🏢 {{ selectedJob?.companyName }}</p>
+          <p>📍 {{ selectedJob?.location }}</p>
+          <p>💼 {{ selectedJob?.jobType }}</p>
+        </div>
+
+        <div class="form-group">
+          <label>Cover Letter</label>
+          <textarea
+            [(ngModel)]="applyForm.coverLetter"
+            placeholder="Write your cover letter here..."
+            rows="5"
+          ></textarea>
+        </div>
+
+        <div class="apply-error" *ngIf="applyError">{{ applyError }}</div>
+        <div class="apply-success" *ngIf="applySuccess">{{ applySuccess }}</div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeApplyModal()">Cancel</button>
+        <button class="btn-submit-apply" (click)="submitApplication()" [disabled]="isApplying">
+          {{ isApplying ? 'Applying...' : 'Submit Application' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

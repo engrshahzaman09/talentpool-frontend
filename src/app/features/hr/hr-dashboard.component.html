@@ -1,0 +1,150 @@
+<div class="dashboard">
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <h1>🏢 TalentPool</h1>
+      <span>HR Manager Panel</span>
+    </div>
+    <div class="nav-user">
+      <span>Welcome, {{ currentUser?.fullName }}</span>
+      <button (click)="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button [class.active]="activeTab === 'jobs'" (click)="activeTab = 'jobs'">Jobs</button>
+    <button [class.active]="activeTab === 'applications'" (click)="activeTab = 'applications'">Applications</button>
+  </div>
+
+  <!-- Jobs Tab -->
+  <div class="content" *ngIf="activeTab === 'jobs'">
+    <div class="content-header">
+      <h2>Job Listings</h2>
+      <button class="btn-add" (click)="showJobForm = !showJobForm">
+        {{ showJobForm ? 'Cancel' : '+ Post New Job' }}
+      </button>
+    </div>
+
+    <!-- Job Form -->
+    <div class="job-form" *ngIf="showJobForm">
+      <h3>Post New Job</h3>
+      <form (ngSubmit)="createJob()">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Job Title</label>
+            <input type="text" [(ngModel)]="jobForm.title" name="title" placeholder="Enter job title" required />
+          </div>
+          <div class="form-group">
+            <label>Location</label>
+            <input type="text" [(ngModel)]="jobForm.location" name="location" placeholder="Enter location" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea [(ngModel)]="jobForm.description" name="description" placeholder="Enter job description" rows="4"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Job Type</label>
+            <select [(ngModel)]="jobForm.jobType" name="jobType">
+              <option value="FULL_TIME">Full Time</option>
+              <option value="PART_TIME">Part Time</option>
+              <option value="CONTRACT">Contract</option>
+              <option value="INTERNSHIP">Internship</option>
+              <option value="REMOTE">Remote</option>
+              <option value="HYBRID">Hybrid</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Deadline</label>
+            <input type="date" [(ngModel)]="jobForm.deadline" name="deadline" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Min Salary</label>
+            <input type="number" [(ngModel)]="jobForm.salaryMin" name="salaryMin" placeholder="Min salary" />
+          </div>
+          <div class="form-group">
+            <label>Max Salary</label>
+            <input type="number" [(ngModel)]="jobForm.salaryMax" name="salaryMax" placeholder="Max salary" />
+          </div>
+        </div>
+        <button type="submit" class="btn-submit">Post Job</button>
+      </form>
+    </div>
+
+    <!-- Jobs Table -->
+    <div class="loading" *ngIf="isLoading">Loading...</div>
+    <table *ngIf="!isLoading">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Location</th>
+          <th>Type</th>
+          <th>Status</th>
+          <th>Deadline</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let job of jobs">
+          <td>{{ job.title }}</td>
+          <td>{{ job.location }}</td>
+          <td>{{ job.jobType }}</td>
+          <td><span class="status-active">{{ job.status }}</span></td>
+          <td>{{ job.deadline }}</td>
+          <td>
+            <button class="btn-view" (click)="loadApplications(job.id)">View Applications</button>
+            <button class="btn-close" (click)="closeJob(job.id)">Close</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Applications Tab -->
+  <div class="content" *ngIf="activeTab === 'applications'">
+    <div class="content-header">
+      <h2>Applications</h2>
+      <button class="btn-back" (click)="activeTab = 'jobs'">← Back to Jobs</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Candidate</th>
+          <th>Email</th>
+          <th>Job</th>
+          <th>Status</th>
+          <th>Applied At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let app of applications">
+          <td>{{ app.candidateName }}</td>
+          <td>{{ app.candidateEmail }}</td>
+          <td>{{ app.jobTitle }}</td>
+          <td>
+            <span class="badge">{{ app.status }}</span>
+          </td>
+          <td>{{ app.appliedAt | date }}</td>
+          <td>
+            <select (change)="updateStatus(app.id, $any($event.target).value)">
+              <option value="APPLIED">Applied</option>
+              <option value="UNDER_REVIEW">Under Review</option>
+              <option value="SHORTLISTED">Shortlisted</option>
+              <option value="INTERVIEW_SCHEDULED">Interview Scheduled</option>
+              <option value="REJECTED">Rejected</option>
+              <option value="HIRED">Hired</option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

@@ -1,0 +1,85 @@
+<div class="register-container">
+  <div class="register-card">
+
+    <div class="logo">
+      <h1>TalentPool</h1>
+      <p>HR Recruitment Management System</p>
+    </div>
+
+    <h2>Create Account</h2>
+    <p class="subtitle">Join TalentPool today</p>
+
+    <div class="error-message" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <div class="success-message" *ngIf="successMessage">
+      {{ successMessage }}
+    </div>
+
+    <form (ngSubmit)="onRegister()">
+
+      <div class="form-group">
+        <label>Full Name</label>
+        <input
+          type="text"
+          [(ngModel)]="registerData.fullName"
+          name="fullName"
+          placeholder="Enter your full name"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Email Address</label>
+        <input
+          type="email"
+          [(ngModel)]="registerData.email"
+          name="email"
+          placeholder="Enter your email"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input
+          type="password"
+          [(ngModel)]="registerData.password"
+          name="password"
+          placeholder="Enter your password"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input
+          type="text"
+          [(ngModel)]="registerData.phone"
+          name="phone"
+          placeholder="Enter your phone number"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Register As</label>
+        <select [(ngModel)]="registerData.role" name="role">
+          <option value="ROLE_CANDIDATE">Candidate</option>
+          <option value="ROLE_HR">HR Manager</option>
+        </select>
+      </div>
+
+      <button type="submit" [disabled]="isLoading">
+        {{ isLoading ? 'Creating Account...' : 'Create Account' }}
+      </button>
+
+    </form>
+
+    <p class="login-link">
+      Already have an account?
+      <a routerLink="/auth/login">Sign in here</a>
+    </p>
+
+  </div>
+</div>

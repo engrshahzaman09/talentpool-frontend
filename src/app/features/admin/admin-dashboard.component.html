@@ -1,0 +1,79 @@
+<div class="dashboard">
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <h1>🏢 TalentPool</h1>
+      <span>Admin Panel</span>
+    </div>
+    <div class="nav-user">
+      <span>Welcome, {{ currentUser?.fullName }}</span>
+      <button (click)="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <!-- Stats -->
+  <div class="stats-container">
+    <div class="stat-card">
+      <h3>{{ totalUsers }}</h3>
+      <p>Total Users</p>
+    </div>
+    <div class="stat-card">
+      <h3>{{ users.length }}</h3>
+      <p>Loaded Users</p>
+    </div>
+  </div>
+
+  <!-- Users Table -->
+  <div class="content">
+    <h2>User Management</h2>
+
+    <div class="loading" *ngIf="isLoading">Loading...</div>
+
+    <table *ngIf="!isLoading">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Full Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.id }}</td>
+          <td>{{ user.fullName }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.phone || 'N/A' }}</td>
+          <td>
+            <span class="badge" [ngClass]="{
+              'badge-admin': user.role === 'ROLE_ADMIN',
+              'badge-hr': user.role === 'ROLE_HR',
+              'badge-candidate': user.role === 'ROLE_CANDIDATE'
+            }">
+              {{ user.role }}
+            </span>
+          </td>
+          <td>
+            <span [class]="user.isActive ? 'status-active' : 'status-inactive'">
+              {{ user.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </td>
+          <td>
+            <button class="btn-toggle" (click)="toggleStatus(user.id)">
+              {{ user.isActive ? 'Disable' : 'Enable' }}
+            </button>
+            <button class="btn-delete" (click)="deleteUser(user.id)">
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+</div>
