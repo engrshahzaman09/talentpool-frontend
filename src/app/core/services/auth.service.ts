@@ -9,7 +9,7 @@ import { StorageService } from './storage.service';
 })
 export class AuthService {
 
-  private apiUrl = 'http://localhost:8080/api/auth';
+  private apiUrl = 'https://talentpool-backend-copy-production.up.railway.app/api/auth';
 
   constructor(private http: HttpClient, private storageService: StorageService) {}
 
