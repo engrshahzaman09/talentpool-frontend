@@ -9,7 +9,7 @@ import { ApiResponse } from '../models/auth.model';
 })
 export class ApplicationService {
 
-  private apiUrl = 'https://talentpool-backend-copy-production.up.railway.app/api/applications';
+ private apiUrl = 'http://44.244.202.28:8080/api/applications';
 
   constructor(private http: HttpClient) {}
 

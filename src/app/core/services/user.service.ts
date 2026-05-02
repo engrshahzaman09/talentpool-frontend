@@ -9,7 +9,7 @@ import { User } from '../models/user.model';
 })
 export class UserService {
 
-  private apiUrl = 'https://talentpool-backend-copy-production.up.railway.app/api/users';
+  private apiUrl = 'http://44.244.202.28:8080/api/users';
 
   constructor(private http: HttpClient) {}
 
